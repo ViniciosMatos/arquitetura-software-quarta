@@ -1,9 +1,10 @@
 package domain;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class Produto implements EntityInterface {
-
+    private UUID id;
     private String sku;
     private String nome;
     private String marca;
@@ -20,6 +21,14 @@ public class Produto implements EntityInterface {
         this.marca = marca;
         this.descricao = descricao;
         this.preco = preco;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     public String getSku() {
@@ -68,5 +77,18 @@ public class Produto implements EntityInterface {
 
     public void setHistoricoDePrecos(ArrayList<Preco> historicoDePrecos) {
         this.historicoDePrecos = historicoDePrecos;
+    }
+
+    @Override
+    public String toString() {
+        return "Produto{" +
+                "id=" + id +
+                ", sku='" + sku + '\'' +
+                ", nome='" + nome + '\'' +
+                ", marca='" + marca + '\'' +
+                ", descricao='" + descricao + '\'' +
+                ", preco=" + preco +
+                ", historicoDePrecos=" + historicoDePrecos +
+                '}';
     }
 }
