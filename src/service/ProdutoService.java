@@ -24,7 +24,21 @@ public class ProdutoService implements ServiceInterface {
 
     @Override
     public void list() {
-        IO.println(produtos);
+        for (int i = 0; i < produtos.size(); i++) {
+            System.out.printf("\nIndice: %s\n", i);
+            System.out.printf("Id: %s\n", produtos.get(i).getId());
+            System.out.printf("SKU: %s\n", produtos.get(i).getSku());
+            System.out.printf("Nome: %s\n", produtos.get(i).getNome());
+            System.out.printf("Descricao: %s\n", produtos.get(i).getDescricao());
+            System.out.printf("Marca: %s\n", produtos.get(i).getMarca());
+            System.out.printf("preço: %s\n", produtos.get(i).getPreco());
+            System.out.println("---------------------------------\n");
+        }
+    }
+
+    @Override
+    public EntityInterface findByIndex(int index) {
+        return produtos.get(index);
     }
 
     @Override
