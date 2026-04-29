@@ -1,61 +1,46 @@
 import domain.Produto;
+import infra.HibernateUtil;
 import service.ProdutoService;
 import service.ServiceInterface;
 
 void main() {
     ProdutoService service = new ProdutoService();
 
-//    produto.setId(id);
-//    //adicionei o produto a lista
-//    service.add(produto);
-//    //listei os produtos
-//    service.list();
-//
-//    produto.setNome("Playstation 5");
-//    service.edit(produto, id);
-//    service.list();
-
-    boolean menuAtivo = true;
-    while (menuAtivo) {
-        int opcaoSelecionada = menu();
-        switch (opcaoSelecionada) {
-            case 1:
-                adicionarProduto(service);
-                break;
-            case 2:
-                listarProdutos(service);
-                break;
-            case 3:
-                editarProdutos(service);
-                break;
-            case 4:
-                deletarProdutos(service);
-                break;
-            case 0:
-                menuAtivo = false;
-                break;
+    try {
+        boolean menuAtivo = true;
+        while (menuAtivo) {
+            int opcaoSelecionada = menu();
+            switch (opcaoSelecionada) {
+                case 1:
+                    adicionarProduto(service);
+                    break;
+                case 2:
+                    listarProdutos(service);
+                    break;
+                case 3:
+                    editarProdutos(service);
+                    break;
+                case 4:
+                    deletarProdutos(service);
+                    break;
+                case 0:
+                    menuAtivo = false;
+                    break;
+            }
         }
+    } finally {
+        HibernateUtil.shutdown();
     }
-
-
 }
 
 public void adicionarProduto(ServiceInterface service) {
-    UUID id = new UUID(1, 1);
-
     String sku = IO.readln("Digite a SKU do produto: ");
     String nome = IO.readln("Digite o nome do produto: ");
     String marca = IO.readln("Digite a marca do produto: ");
     String descricao = IO.readln("Digite a descricao do produto: ");
     Float preco = Float.parseFloat(IO.readln("Digite o preco do produto: "));
 
-    Produto produto = new Produto(
-            sku,
-            nome,
-            marca,
-            descricao,
-            preco);
-    produto.setId(id);
+    Produto produto = new Produto(sku, nome, marca, descricao, preco);
 
     service.add(produto);
 }
@@ -76,12 +61,15 @@ public void editarProdutos(ServiceInterface service) {
     produto.setMarca(IO.readln("Informe a nova marca do produto: "));
     produto.setPreco(Float.parseFloat(IO.readln("Informe o novo preco do produto: ")));
 
-
     service.edit(produto, produto.getId());
 }
 
 public void deletarProdutos(ServiceInterface service) {
-
+    System.out.println("Atualmente temos os seguintes produtos cadastrados: ");
+    service.list();
+    int indice = Integer.parseInt(IO.readln("Digite o indice do produto que deseja deletar: "));
+    Produto produto = (Produto) service.findByIndex(indice);
+    service.remove(produto);
 }
 
 
@@ -96,6 +84,3 @@ public Integer menu() {
     int opcao = Integer.parseInt(IO.readln());
     return opcao;
 }
-
-
-

@@ -1,0 +1,7 @@
+Main.class
+domain/Preco.class
+domain/EntityInterface.class
+service/ServiceInterface.class
+service/ProdutoService.class
+domain/Produto.class
+infra/HibernateUtil.class
