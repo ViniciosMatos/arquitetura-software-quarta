@@ -1,10 +1,13 @@
+import domain.Preco;
 import domain.Produto;
 import infra.HibernateUtil;
+import service.PrecoService;
 import service.ProdutoService;
 import service.ServiceInterface;
 
 void main() {
-    ProdutoService service = new ProdutoService();
+    ProdutoService produtoService = new ProdutoService();
+    PrecoService precoService = new PrecoService();
 
     try {
         boolean menuAtivo = true;
@@ -12,16 +15,22 @@ void main() {
             int opcaoSelecionada = menu();
             switch (opcaoSelecionada) {
                 case 1:
-                    adicionarProduto(service);
+                    adicionarProduto(produtoService, precoService);
                     break;
                 case 2:
-                    listarProdutos(service);
+                    listarProdutos(produtoService);
                     break;
                 case 3:
-                    editarProdutos(service);
+                    editarProdutos(produtoService, precoService);
                     break;
                 case 4:
-                    deletarProdutos(service);
+                    deletarProdutos(produtoService);
+                    break;
+                case 5:
+                    editarPreco(produtoService, precoService);
+                    break;
+                case 6:
+                    listarPrecos(precoService);
                     break;
                 case 0:
                     menuAtivo = false;
@@ -33,7 +42,7 @@ void main() {
     }
 }
 
-public void adicionarProduto(ServiceInterface service) {
+public void adicionarProduto(ServiceInterface produtoService, ServiceInterface precoService) {
     String sku = IO.readln("Digite a SKU do produto: ");
     String nome = IO.readln("Digite o nome do produto: ");
     String marca = IO.readln("Digite a marca do produto: ");
@@ -41,27 +50,35 @@ public void adicionarProduto(ServiceInterface service) {
     Float preco = Float.parseFloat(IO.readln("Digite o preco do produto: "));
 
     Produto produto = new Produto(sku, nome, marca, descricao, preco);
+    produtoService.add(produto);
 
-    service.add(produto);
+    Date dataAtual = new Date();
+    Preco novoPreco = new Preco(dataAtual, preco, produto);
+    precoService.add(novoPreco);
 }
 
 public void listarProdutos(ServiceInterface service) {
     service.list();
 }
 
-public void editarProdutos(ServiceInterface service) {
+public void editarProdutos(ServiceInterface produtoService, ServiceInterface precoService) {
     System.out.println("Atualmente temos os seguintes produtos cadastrados: ");
-    service.list();
+    produtoService.list();
     int indice = Integer.parseInt(IO.readln("Digite o indice do produto que deseja editar"));
 
-    Produto produto = (Produto) service.findByIndex(indice);
+    Produto produto = (Produto) produtoService.findByIndex(indice);
     produto.setSku(IO.readln("Informe o novo SKU do produto: "));
     produto.setNome(IO.readln("Informe o novo nome do produto: "));
     produto.setDescricao(IO.readln("Informe a nova descricao do produto: "));
     produto.setMarca(IO.readln("Informe a nova marca do produto: "));
     produto.setPreco(Float.parseFloat(IO.readln("Informe o novo preco do produto: ")));
 
-    service.edit(produto, produto.getId());
+
+    produtoService.edit(produto, produto.getId());
+
+    Date dataAtual = new Date();
+    Preco novoPreco = new Preco(dataAtual, produto.getPreco(), produto);
+    precoService.add(novoPreco);
 }
 
 public void deletarProdutos(ServiceInterface service) {
@@ -72,6 +89,23 @@ public void deletarProdutos(ServiceInterface service) {
     service.remove(produto);
 }
 
+public void editarPreco(ServiceInterface produtoService, ServiceInterface precoService) {
+    produtoService.list();
+    int indice = Integer.parseInt(IO.readln("Digite o indice do produto que deseja alterar"));
+
+    Produto produto = (Produto) produtoService.findByIndex(indice);
+    produto.setPreco(Float.parseFloat(IO.readln("Digite o novo preço: ")));
+    produtoService.edit(produto, produto.getId());
+
+    Date dataAtual = new Date();
+    Preco novoPreco = new Preco(dataAtual, produto.getPreco(), produto);
+    precoService.add(novoPreco);
+}
+
+public void listarPrecos(ServiceInterface precoService){
+    precoService.list();
+}
+
 
 public Integer menu() {
     System.out.println("Digite a opção desejada: ");
@@ -79,6 +113,8 @@ public Integer menu() {
     System.out.println("2 = Listar os produtos");
     System.out.println("3 = Editar um produto");
     System.out.println("4 = Deletar um produto");
+    IO.println("5 = Editar um preço");
+    IO.println("6 = Listar o Histórico de Preços");
     System.out.println("0 = Sair");
 
     int opcao = Integer.parseInt(IO.readln());

@@ -66,8 +66,8 @@ public class Preco implements EntityInterface {
         this.preco = preco;
     }
 
-    public Produto getProduto() {
-        return produto;
+    public String getProduto() {
+        return produto.toString();
     }
 
     public void setProduto(Produto produto) {
