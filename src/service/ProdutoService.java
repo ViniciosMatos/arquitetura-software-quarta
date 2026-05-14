@@ -82,4 +82,17 @@ public class ProdutoService implements ServiceInterface {
                     .getResultList();
         }
     }
+
+    /**
+     * Busca um produto pelo SKU. Retorna null se não existir.
+     */
+    public Produto findBySku(String sku) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            List<Produto> result = session.createQuery(
+                            "from Produto p where p.sku = :sku", Produto.class)
+                    .setParameter("sku", sku)
+                    .getResultList();
+            return result.isEmpty() ? null : result.get(0);
+        }
+    }
 }

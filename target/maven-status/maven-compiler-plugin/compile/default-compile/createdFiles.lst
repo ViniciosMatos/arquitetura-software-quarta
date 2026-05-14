@@ -1,7 +1,10 @@
+domain\EntityInterface.class
 Main.class
-domain/Preco.class
-domain/EntityInterface.class
-service/ServiceInterface.class
-service/ProdutoService.class
-domain/Produto.class
-infra/HibernateUtil.class
+service\CrawlerService.class
+service\ServiceInterface.class
+infra\adapter\JsoupCrawlerAdapter.class
+infra\HibernateUtil.class
+service\ProdutoService.class
+domain\Preco.class
+domain\Produto.class
+domain\port\CrawlerPort.class

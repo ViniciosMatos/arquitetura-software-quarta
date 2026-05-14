@@ -34,9 +34,9 @@ public class PrecoService implements ServiceInterface{
             Preco preco = precos.get(i);
             System.out.printf("\nIndice: %s\n", i);
             System.out.printf("Id: %s\n", preco.getId());
-            System.out.printf("SKU: %s\n", preco.getPreco());
-            System.out.printf("Nome: %s\n", preco.getDataAtual());
-            System.out.printf("Descricao: %s\n", preco.getProduto());
+            System.out.printf("SKU: %s\n", preco.getProduto().getSku());
+            System.out.printf("Nome: %s\n", preco.getProduto().getNome());
+            System.out.printf("Descricao: %s\n", preco.getProduto().getDescricao());
             IO.println("\n-----------------------------------\n");
         }
     }

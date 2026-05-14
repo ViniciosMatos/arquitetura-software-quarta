@@ -1,6 +1,9 @@
 import domain.Preco;
 import domain.Produto;
+import domain.port.CrawlerPort;
 import infra.HibernateUtil;
+import infra.adapter.JsoupCrawlerAdapter;
+import service.CrawlerService;
 import service.PrecoService;
 import service.ProdutoService;
 import service.ServiceInterface;
@@ -8,6 +11,10 @@ import service.ServiceInterface;
 void main() {
     ProdutoService produtoService = new ProdutoService();
     PrecoService precoService = new PrecoService();
+
+    // Arquitetura Hexagonal: Adapter injetado na porta
+    CrawlerPort crawlerPort = new JsoupCrawlerAdapter();
+    CrawlerService crawlerService = new CrawlerService(crawlerPort, produtoService, precoService);
 
     try {
         boolean menuAtivo = true;
@@ -31,6 +38,9 @@ void main() {
                     break;
                 case 6:
                     listarPrecos(precoService);
+                    break;
+                case 7:
+                    monitorarPreco(crawlerService);
                     break;
                 case 0:
                     menuAtivo = false;
@@ -106,6 +116,15 @@ public void listarPrecos(ServiceInterface precoService){
     precoService.list();
 }
 
+public void monitorarPreco(CrawlerService crawlerService) {
+    String url = "https://loja.gremiomania.com.br/camisa-gremio-i-2026-torcedor-masculina-new-balance/p?skuId=8845";
+    String nomeProduto = "Camisa do Grêmio 2026 - Home";
+    String sku = "8845";
+    String marca = "New Balance";
+
+    crawlerService.monitorar(url, nomeProduto, sku, marca);
+}
+
 
 public Integer menu() {
     System.out.println("Digite a opção desejada: ");
@@ -115,6 +134,7 @@ public Integer menu() {
     System.out.println("4 = Deletar um produto");
     IO.println("5 = Editar um preço");
     IO.println("6 = Listar o Histórico de Preços");
+    IO.println("7 = Monitorar preço (Crawler)");
     System.out.println("0 = Sair");
 
     int opcao = Integer.parseInt(IO.readln());
